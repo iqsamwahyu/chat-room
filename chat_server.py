@@ -16,20 +16,21 @@ if len(sys.argv) != 3:
     exit()
 IP_address = str(sys.argv[1])
 Port = int(sys.argv[2])
-server.bind((IP_address, Port)) 
+server.bind((IP_address, Port))
 #binds the server to an entered IP address and at the specified port number. The client must be aware of these parameters
 server.listen(100)
 #listens for 100 active connections. This number can be increased as per convenience
 list_of_clients=[]
+hostnem= socket.gethostname()
 
 def clientthread(conn, addr):
     conn.send("Welcome to this chatroom!")
     #sends a message to the client whose user object is conn
     while True:
-            try:     
-                message = conn.recv(2048)    
+            try:
+                message = conn.recv(2048)
                 if message:
-                    print "<" + addr[0] + "> " + message
+                    print "<" + addr[0] + ":" + hostnem+"> " + message
                     message_to_send = "<" + addr[0] + "> " + message
                     broadcast(message_to_send,conn)
                     #prints the message and address of the user who just sent the message on the server terminal
@@ -58,7 +59,7 @@ while True:
     the IP address of the client that just connected
     """
     list_of_clients.append(conn)
-    print addr[0] + " connected"
+    print hostnem   + " connected"
     #maintains a list of clients for ease of broadcasting a message to all available people in the chatroom
     #Prints the address of the person who just connected
     start_new_thread(clientthread,(conn,addr))
